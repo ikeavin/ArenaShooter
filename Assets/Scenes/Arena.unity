@@ -358,6 +358,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32788cdaec1ae412fbe04c8f604ba683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1468610239}
+  bullet: {fileID: 0}
+  avoidanceMode: 0
+  weaponRange: 20
+  spread: 1
 --- !u!65 &357564100
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -389,7 +394,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
+  - {fileID: 2100002, guid: 36ed72df9b6f5de45819a1f02a1f034b, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
