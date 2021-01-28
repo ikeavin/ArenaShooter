@@ -54,4 +54,15 @@ public class Enemy : MonoBehaviour
     {
 
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+
+        if(bullet != null)
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
+    }
 }
