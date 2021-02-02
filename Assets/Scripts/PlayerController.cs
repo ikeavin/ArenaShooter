@@ -5,14 +5,18 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public GameObject bulletPrefab;
-
+    public float maxHealth;
+    public float health;
     private float speed;
     private float verticalInput;
     private float horizontalInput;
+    public Origin origin = Origin.Player;
 
     // Start is called before the first frame update
     void Start()
     {
+        health = 5;
+        maxHealth = 5;
         speed = 5;
     }
 
@@ -27,7 +31,6 @@ public class PlayerController : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             Shoot();
-
         }
     }
 
@@ -38,11 +41,29 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
         {
             Vector3 direction = hit.point;
-            direction.y = transform.position.y;
             direction -= transform.position;
             direction = direction.normalized;
+            direction.y = transform.position.y;
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
             bullet.GetComponent<Bullet>().SetDirection(direction);
+            bullet.GetComponent<Bullet>().SetOrigin(this.origin);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+
+        if (bullet != null && bullet.GetOrigin() != this.origin)
+        {
+
+            this.health -= bullet.GetDamage();
+            Destroy(collision.gameObject);
+
+            if(this.health <= 0)
+            {
+                Time.timeScale = 0f;
+            }
         }
     }
 }
