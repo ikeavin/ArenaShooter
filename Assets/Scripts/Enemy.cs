@@ -65,24 +65,23 @@ public class Enemy : MonoBehaviour
 
     void Shoot(Vector3 direction, Vector3 position)
     {
-        
-        direction.y = position.y;
+
         direction -= position;
+        direction.y = 0;
         direction = direction.normalized;
-        GameObject bullet = Instantiate(bulletPrefab, transform);
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
         bullet.GetComponent<Bullet>().SetDirection(direction);
-        bullet.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
         bullet.GetComponent<Bullet>().SetOrigin(this.origin);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+        Bullet bullet = other.gameObject.GetComponent<Bullet>();
 
         if(bullet != null && bullet.GetOrigin() != this.origin)
         {
             this.health -= bullet.GetDamage();
-            Destroy(collision.gameObject);
+            Destroy(other.gameObject);
 
             if (this.health <= 0)
             {

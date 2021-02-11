@@ -7,34 +7,72 @@ public class PlayerController : MonoBehaviour
     public GameObject bulletPrefab;
     public float maxHealth;
     public float health;
-    private float speed;
-    private float verticalInput;
-    private float horizontalInput;
+    public float attackSpeed;
+    public float attackTimer;
+    public float firstAbilityCooldown;
+    public float firstAbilityTimer;
+    public float reloadSpeed;
+    public float reloadTimer;
+    public float maxAmmo;
+    public float ammo;
+    public bool reloading;
+    protected float speed;
+    protected float verticalInput;
+    protected float horizontalInput;
     public Origin origin = Origin.Player;
 
     // Start is called before the first frame update
     void Start()
     {
-        health = 5;
-        maxHealth = 5;
-        speed = 5;
+        attackSpeed = .5f;
+        attackTimer = attackSpeed;
+        health = 5f;
+        maxHealth = 5f;
+        speed = 5f;
+        firstAbilityCooldown = 24f;
+        firstAbilityTimer = 24f;
+        reloadSpeed = 1.5f;
+        reloadTimer = 0f;
+        reloading = false;
+        maxAmmo = 6;
+        ammo = maxAmmo;
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
+        attackTimer += Time.deltaTime;
+        firstAbilityTimer += Time.deltaTime;
+
+        if(reloading)
+        {
+            reloadTimer += Time.deltaTime;
+            if(reloadTimer >= reloadSpeed)
+            {
+                reloading = false;
+                ammo = maxAmmo;
+            }
+        }
+
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
         transform.Translate(Vector3.right * Time.deltaTime * horizontalInput * speed);
         transform.Translate(Vector3.forward * Time.deltaTime * verticalInput * speed);
 
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && attackTimer >= attackSpeed && ammo > 0)
         {
+            attackTimer = 0f;
+            ammo--;
             Shoot();
+        }
+
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            reloading = true;
         }
     }
 
-    void Shoot()
+    protected void Shoot()
     {
         RaycastHit hit;
 
@@ -42,23 +80,23 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 direction = hit.point;
             direction -= transform.position;
+            direction.y = 0;
             direction = direction.normalized;
-            direction.y = transform.position.y;
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
             bullet.GetComponent<Bullet>().SetDirection(direction);
             bullet.GetComponent<Bullet>().SetOrigin(this.origin);
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    protected void OnTriggerEnter(Collider other)
     {
-        Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+        Bullet bullet = other.gameObject.GetComponent<Bullet>();
 
         if (bullet != null && bullet.GetOrigin() != this.origin)
         {
 
             this.health -= bullet.GetDamage();
-            Destroy(collision.gameObject);
+            Destroy(other.gameObject);
 
             if(this.health <= 0)
             {

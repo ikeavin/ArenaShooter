@@ -15,9 +15,9 @@ public class Bullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = 20f;
+        speed = 50f;
         distanceTravelled = 0f;
-        range = 50f;
+        range = 70f;
         damage = 1f;
     }
 
@@ -61,5 +61,15 @@ public class Bullet : MonoBehaviour
     public float GetDamage()
     {
         return this.damage;
+    }
+
+    public void SetSpeed(float speed)
+    {
+        this.speed = speed;
+    }
+
+    public float GetSpeed()
+    {
+        return this.speed;
     }
 }
