@@ -21,14 +21,13 @@ public class PlayerAssassin : PlayerController
         ammo = maxAmmo;
     }
 
-    // Update is called once per frame
-    protected new void Update()
+    protected override void ProcessAbility()
     {
-        base.Update();
 
-        if(Input.GetKeyDown(KeyCode.LeftShift))
-        {
+    }
 
-        }
+    protected override void DeactivateAbility()
+    {
+
     }
 }

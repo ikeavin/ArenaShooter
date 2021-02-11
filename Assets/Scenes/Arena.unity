@@ -1119,11 +1119,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1468610239}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b09be2a6addf414ba686e3fc27689ae, type: 3}
+  m_Script: {fileID: 11500000, guid: 41273d594048d4873a7fb0b42738b983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 1165416520502028621, guid: 63acae4c712074c318ebe1d85aa034d1,
     type: 3}
   maxHealth: 0
   health: 0
+  attackSpeed: 0
+  attackTimer: 0
+  firstAbilityCooldown: 0
+  firstAbilityTimer: 0
+  firstAbilityEffectTimer: 0
+  firstAbilityDuration: 0
+  reloadSpeed: 0
+  reloadTimer: 0
+  maxAmmo: 0
+  ammo: 0
+  defaultReloadSpeed: 0
+  defaultAttackSpeed: 0
+  reloading: 0
+  abilityActivated: 0
   origin: 0
