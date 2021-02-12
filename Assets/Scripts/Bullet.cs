@@ -18,7 +18,6 @@ public class Bullet : MonoBehaviour
         speed = 50f;
         distanceTravelled = 0f;
         range = 70f;
-        damage = 1f;
     }
 
     // Update is called once per frame

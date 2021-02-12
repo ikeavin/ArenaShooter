@@ -85,22 +85,8 @@ public abstract class PlayerController : MonoBehaviour
     }
 
     protected void ProcessTimers() {
-        //Increment cooldown timers
+        //Increment attack timer
         attackTimer += Time.deltaTime;
-
-
-        if (abilityActivated)
-        {
-            firstAbilityEffectTimer += Time.deltaTime;
-            if (firstAbilityEffectTimer > firstAbilityDuration)
-            {
-                abilityActivated = false;
-                DeactivateAbility();
-            }
-        }
-        else {
-            firstAbilityTimer += Time.deltaTime;
-        }
 
         //Increment reload timer if the player is reloading
         if (reloading == true)
@@ -116,8 +102,10 @@ public abstract class PlayerController : MonoBehaviour
         }
     }
 
+    //Implement to listen for keypresses and handle timers for abilities
     protected abstract void ProcessAbility();
 
+    //Implement to handle when the ability ends
     protected abstract void DeactivateAbility();
 
     //Determine if the player can currently shoot

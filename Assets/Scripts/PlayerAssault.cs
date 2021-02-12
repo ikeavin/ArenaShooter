@@ -23,17 +23,33 @@ public class PlayerAssault : PlayerController
         reloading = false;
         maxAmmo = 8;
         ammo = maxAmmo;
-        Debug.Log("Hello there");
     }
     
     protected override void ProcessAbility()
     {
+        //Determine if ability can be activated
         if (Input.GetKeyDown(KeyCode.Space) && firstAbilityTimer >= firstAbilityCooldown)
         {
             firstAbilityTimer = 0;
             firstAbilityEffectTimer = 0;
             abilityActivated = true;
         }
+
+        //Increment cooldown timers
+        if (abilityActivated)
+        {
+            firstAbilityEffectTimer += Time.deltaTime;
+            if (firstAbilityEffectTimer > firstAbilityDuration)
+            {
+                abilityActivated = false;
+                DeactivateAbility();
+            }
+        }
+        else
+        {
+            firstAbilityTimer += Time.deltaTime;
+        }
+
 
         if (abilityActivated)
         {
@@ -48,6 +64,5 @@ public class PlayerAssault : PlayerController
         reloadSpeed = defaultReloadSpeed;
         attackSpeed = defaultAttackSpeed;
         ammo = maxAmmo;
-        Debug.Log("Deactivated;");
     }
 }
