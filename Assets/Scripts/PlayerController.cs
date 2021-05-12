@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public abstract class PlayerController : MonoBehaviour
+public abstract class PlayerController : NetworkBehaviour
 {
     public GameObject bulletPrefab;
     public float maxHealth;
@@ -25,6 +26,9 @@ public abstract class PlayerController : MonoBehaviour
     protected float verticalInput;
     protected float horizontalInput;
     public Origin origin = Origin.Player;
+    private float timePerFrame = .02f;
+    //public Camera tempCamera;
+    //public Camera playerCamera;
 
     //Start is called before the first frame update
     //Initialize all base stats for the Character Class
@@ -49,31 +53,39 @@ public abstract class PlayerController : MonoBehaviour
     }
 
     //Update is called once per frame
-    protected void Update()
+    [Client]
+    protected void FixedUpdate()
     {
-
+        Debug.Log("Delta Time: " + timePerFrame);
+        Debug.Log("Fixed Delta Time: " + timePerFrame);
+        if (!hasAuthority) return;
         ProcessTimers();
         ProcessMovement();
         ProcessAttacks();
         ProcessAbility();
-
     }
 
+    [Client]
     protected void ProcessMovement() {
+        if (!hasAuthority) return;
+        Debug.Log("Reached Movement");
         //Move character based on WASD input
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.right * Time.deltaTime * horizontalInput * speed);
-        transform.Translate(Vector3.forward * Time.deltaTime * verticalInput * speed);
+        transform.Translate(Vector3.right * timePerFrame * horizontalInput * speed);
+        transform.Translate(Vector3.forward * timePerFrame * verticalInput * speed);
     }
 
+    [Client]
     protected void ProcessAttacks() {
         //If left mouse button is pressed and the player is capable of shooting, shoot
+        if (!hasAuthority) return;
+        Debug.Log("Reached Attacks");
         if (Input.GetMouseButton(0) && CanShoot())
         {
             attackTimer = 0f;
             ammo--;
-            Shoot();
+            CmdShoot();
         }
 
         //If the player isn't already reloading and is has pressed R, initiate reloading
@@ -84,14 +96,17 @@ public abstract class PlayerController : MonoBehaviour
         }
     }
 
+    [Client]
     protected void ProcessTimers() {
+        if (!hasAuthority) return;
+        Debug.Log("Reached Timers");
         //Increment attack timer
-        attackTimer += Time.deltaTime;
+        attackTimer += timePerFrame;
 
         //Increment reload timer if the player is reloading
         if (reloading == true)
         {
-            reloadTimer += Time.deltaTime;
+            reloadTimer += timePerFrame;
 
             //If the reload timer is complete reload ammo
             if (reloadTimer >= reloadSpeed)
@@ -118,7 +133,8 @@ public abstract class PlayerController : MonoBehaviour
     }
 
     //Shoot a projectile based on mouse position
-    protected void Shoot()
+    [Command]
+    protected void CmdShoot()
     {
         RaycastHit hit;
 
@@ -134,6 +150,8 @@ public abstract class PlayerController : MonoBehaviour
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
             bullet.GetComponent<Bullet>().SetDirection(direction);
             bullet.GetComponent<Bullet>().SetOrigin(this.origin);
+
+            NetworkServer.Spawn(bullet);
         }
     }
 

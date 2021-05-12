@@ -2,45 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Mirror;
 
-public class Enemy : MonoBehaviour
+public class Enemy : NetworkBehaviour
 {
-    public GameObject player;
-    public GameObject bulletPrefab;
-    private NavMeshAgent agent;
-    public bool avoidanceMode;
-    public float maxHealth;
-    public float health;
-    public float weaponRange;
-    public float spread;
-    public float timeSinceLastShot;
-    public float reloadTime;
-    public Origin origin;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private float weaponRange;
+    [SerializeField] private float reloadTime;
+    [SerializeField] private Origin origin;
+
+    private bool avoidanceMode = false;
+    private float health;
+    private float timeSinceLastShot;
+    private float fixedDeltaTime = .02f;
 
     // Start is called before the first frame update
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        avoidanceMode = false;
-        agent.SetDestination(player.transform.position);
-        reloadTime = 0.75f;
-        timeSinceLastShot = reloadTime;
-        this.origin = Origin.Enemy;
-        maxHealth = 2f;
-        health = maxHealth;
-        
+        health = maxHealth;     
     }
 
     // Update is called once per frame
-    void Update()
+    [Server]
+    void FixedUpdate()
     {
-        timeSinceLastShot += Time.deltaTime;
+        //Find a player if there is no target
+        if(player == null)
+        {
+            player = FindObjectOfType<PlayerController>().gameObject;
+        }
+
+        //Shoot if possible
+        timeSinceLastShot += fixedDeltaTime;
         if(Vector3.Magnitude(transform.position - player.transform.position) <= weaponRange && timeSinceLastShot >= reloadTime)
         {
             timeSinceLastShot = 0f;
             Shoot(player.transform.position, transform.position);
         }
 
+        //Determine movement
         if(avoidanceMode == false && (transform.position - player.transform.position).magnitude < weaponRange / 2)
         {
             avoidanceMode = true;
@@ -63,6 +66,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    [Server]
     void Shoot(Vector3 direction, Vector3 position)
     {
 
@@ -74,6 +78,7 @@ public class Enemy : MonoBehaviour
         bullet.GetComponent<Bullet>().SetOrigin(this.origin);
     }
 
+    [ServerCallback]
     private void OnTriggerEnter(Collider other)
     {
         Bullet bullet = other.gameObject.GetComponent<Bullet>();
@@ -85,7 +90,8 @@ public class Enemy : MonoBehaviour
 
             if (this.health <= 0)
             {
-                Destroy(gameObject);
+                Debug.Log("please kill me :(");
+                NetworkServer.Destroy(gameObject);
             }
         }
     }

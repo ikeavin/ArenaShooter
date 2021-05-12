@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerSniper : PlayerController
 {
-    [SerializeField]
-    protected Camera playerCamera;
     protected bool zoom;
     protected float cameraMagnitude;
 
@@ -25,7 +23,7 @@ public class PlayerSniper : PlayerController
         maxAmmo = 3;
         ammo = maxAmmo;
         zoom = false;
-        cameraMagnitude = playerCamera.transform.position.magnitude;
+        //cameraMagnitude = playerCamera.transform.position.magnitude;
     }
 
     protected override void DeactivateAbility()
@@ -35,7 +33,7 @@ public class PlayerSniper : PlayerController
 
     protected override void ProcessAbility()
     {
-
+        /**
         if (Input.GetKeyDown(KeyCode.Space))
         {
             zoom = !zoom;
@@ -57,5 +55,6 @@ public class PlayerSniper : PlayerController
                 playerCamera.transform.Translate(Time.deltaTime * (new Vector3(0, -1, 3)) * 4);
             }
         }
+        **/
     }
 }

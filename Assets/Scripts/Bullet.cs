@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Bullet : MonoBehaviour
+public class Bullet : NetworkBehaviour
 {
     private float speed;
     public float range;
@@ -11,6 +12,7 @@ public class Bullet : MonoBehaviour
     public float damage;
     private Vector3 direction;
     public Origin origin;
+    private float fixedDeltaTime = .02f;
 
     // Start is called before the first frame update
     void Start()
@@ -21,11 +23,11 @@ public class Bullet : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    [Server]
+    void FixedUpdate()
     {
-        transform.Translate(direction * Time.deltaTime * speed);
-
-        distanceTravelled += (speed * Time.deltaTime);
+        transform.Translate(direction * fixedDeltaTime * speed);
+        distanceTravelled += (speed * fixedDeltaTime);
         if(distanceTravelled >= range)
         {
             Destroy(gameObject);

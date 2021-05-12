@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 7489205524981571670}
   - component: {fileID: 7489205524981571677}
   - component: {fileID: 7489205524981571676}
+  - component: {fileID: -2974049920139353796}
+  - component: {fileID: 3180962351657393790}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -108,17 +110,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32788cdaec1ae412fbe04c8f604ba683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   player: {fileID: 0}
   bulletPrefab: {fileID: 1165416520502028621, guid: 63acae4c712074c318ebe1d85aa034d1,
     type: 3}
-  avoidanceMode: 0
-  maxHealth: 0
-  health: 0
+  agent: {fileID: 7489205524981571677}
+  maxHealth: 10
   weaponRange: 20
-  spread: 1
-  timeSinceLastShot: 0
-  reloadTime: 0
-  origin: 0
+  reloadTime: 1.75
+  origin: 1
 --- !u!195 &7489205524981571677
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -157,3 +158,41 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-2974049920139353796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7489205524981571671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
+--- !u!114 &3180962351657393790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7489205524981571671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 0
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  compressRotation: 0
+  interpolateScale: 1
+  syncScale: 1
